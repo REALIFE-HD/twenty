@@ -1,0 +1,70 @@
+name: Realife build
+
+on:
+  push:
+    branches:
+      - realife/main
+  workflow_dispatch:
+
+concurrency:
+  group: realife-build
+  cancel-in-progress: true
+
+env:
+  # Keep in step with the Twenty version the frontend changes are based on.
+  BASE_IMAGE: twentycrm/twenty:v2.43.0
+  IMAGE: ghcr.io/realife-hd/twenty
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install frontend dependencies
+        run: |
+          corepack enable
+          yarn workspaces focus twenty-monorepo twenty-front twenty-front-component-renderer twenty-ui twenty-shared twenty-sdk twenty-client-sdk
+
+      - name: Compile translations
+        run: |
+          npx nx run twenty-front:lingui:extract
+          npx nx run twenty-front:lingui:compile
+
+      - name: Build frontend
+        env:
+          NODE_OPTIONS: --max-old-space-size=12288
+        run: npx nx build twenty-front
+
+      - name: Compute image tag
+        id: tag
+        run: |
+          base_version="${BASE_IMAGE##*:}"
+          echo "tag=${base_version}-realife.${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: packages/twenty-docker/realife/Dockerfile
+          build-args: BASE_IMAGE=${{ env.BASE_IMAGE }}
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.tag.outputs.tag }}
+            ${{ env.IMAGE }}:latest
+
+      - name: Summary
+        run: echo "Pushed ${IMAGE}:${{ steps.tag.outputs.tag }}" >> "$GITHUB_STEP_SUMMARY"
