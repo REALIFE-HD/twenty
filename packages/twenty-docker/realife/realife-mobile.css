@@ -1,0 +1,135 @@
+/*
+ * Realife CRM (Twenty v2.43) モバイル調整 — Attio 風
+ *
+ * 768px 未満だけに効く。Twenty 本体には手を入れず、index.html に
+ * <link> で差し込む（patch-index.sh）。
+ *
+ * セレクタは次の順で頼っている。Twenty の更新後はここを確認する。
+ *   1. 安定: aria-label / data-testid / navigation-drawer-item / record-index-container
+ *   2. やや安定: CSS Modules のローカル名（[class*="_panel_"] など。ハッシュ部分は無視）
+ *   3. 構造: :has() と隣接セレクタ（DOM の並びが変わると外れる）
+ * ハッシュ化されたクラス（s1abc23 など）は使わない。
+ */
+
+@media (max-width: 767px) {
+  :root {
+    --rl-radius-card: 12px;
+  }
+
+  /* 下部タブバーはフォーク（REALIFE-HD/twenty）側で作り直したので、ここでは触らない */
+
+  /* ---------- 2. ホーム（ナビゲーション画面） ---------- */
+
+  /* メニュー項目：押しやすい高さと文字サイズ */
+  a.navigation-drawer-item,
+  .navigation-drawer-item {
+    min-height: 44px !important;
+    height: 44px !important;
+    font-size: 15px !important;
+    border-radius: 10px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .navigation-drawer-item svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  /* メニューのまとまりを iOS 設定画面のようなカードにする（Attio のホームと同じ考え方） */
+  [class*="_panel_"]:has(.navigation-drawer-item) {
+    background: var(--t-background-primary);
+    border: 1px solid var(--t-border-color-light);
+    border-radius: var(--rl-radius-card);
+    padding: 4px !important;
+    margin-top: 4px;
+  }
+
+  /* ---------- 3. 一覧画面のツールバー ---------- */
+
+  /* 一覧のすぐ上にあるビューバー（ビュー切替・フィルター・ソート・オプション） */
+  /* 「フィルター」などが2行に折り返して崩れていたので、1行に固定して詰める */
+  div:has(+ div > [class*="record-index-container"]) button {
+    white-space: nowrap !important;
+    flex-shrink: 0;
+    font-size: 13px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  /*
+   * ビューバーの中身は「先頭＝ビュー切替、末尾＝フィルター・ソート・オプション」の並び。
+   * :has() の入れ子は使えないので、並び順で指定する。
+   */
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child {
+    flex-shrink: 0;
+    gap: 0 !important;
+  }
+
+  /*
+   * フィルター・ソート・オプションは Attio と同じくアイコンボタンにする。
+   * 並びは 1:フィルター 2:ソート 3:オプション（Twenty v2.43 で確認）。
+   * 文字は font-size:0 で隠すだけなので、読み上げ用の名前は残る。
+   */
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > :nth-child(-n + 3) button,
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > button:nth-child(-n + 3) {
+    font-size: 0 !important;
+    width: 36px;
+    height: 36px;
+    padding: 0 !important;
+    justify-content: center;
+    border-radius: 999px !important;
+  }
+
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > :nth-child(-n + 3) button::before,
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > button:nth-child(-n + 3)::before {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin: auto;
+    background-color: currentColor;
+    -webkit-mask: var(--rl-icon) center / contain no-repeat;
+    mask: var(--rl-icon) center / contain no-repeat;
+  }
+
+  /* アイコンは Tabler Icons（MIT）の filter / arrows-sort / adjustments-horizontal */
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > :nth-child(1) {
+    --rl-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z'/%3E%3C/svg%3E");
+  }
+
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > :nth-child(2) {
+    --rl-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l4 -4l4 4m-4 -4v14'/%3E%3Cpath d='M21 15l-4 4l-4 -4m4 4v-14'/%3E%3C/svg%3E");
+  }
+
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:last-child > :nth-child(3) {
+    --rl-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0'/%3E%3Cpath d='M4 6l8 0'/%3E%3Cpath d='M16 6l4 0'/%3E%3Cpath d='M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0'/%3E%3Cpath d='M4 12l2 0'/%3E%3Cpath d='M10 12l10 0'/%3E%3Cpath d='M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0'/%3E%3Cpath d='M4 18l11 0'/%3E%3Cpath d='M19 18l1 0'/%3E%3C/svg%3E");
+  }
+
+  /* 幅が足りないときはビュー名の方を縮めて「…」にする */
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* ビュー切替をピル型に（Attio の「Pipeline」ボタンに相当） */
+  div:has(+ div > [class*="record-index-container"]) > div > div > div:first-child > div[role="button"] {
+    background: var(--t-background-transparent-lighter);
+    border: 1px solid var(--t-border-color-medium);
+    border-radius: 999px;
+    min-width: 0;
+    max-width: 100%;
+    padding-right: 4px;
+  }
+
+  /* ---------- 4. 入力 ---------- */
+
+  /* 16px 未満だと iOS Safari が入力時に勝手にズームする */
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}
