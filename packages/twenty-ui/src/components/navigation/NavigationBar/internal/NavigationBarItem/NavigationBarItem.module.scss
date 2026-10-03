@@ -4,20 +4,23 @@
   background: none;
   border: none;
   border-radius: var(--t-border-radius-pill);
-  color: inherit;
+  color: var(--t-font-color-tertiary);
   corner-shape: round;
   cursor: pointer;
   display: flex;
-  flex-shrink: 0;
+  flex: 1 1 0;
+  flex-direction: column;
   font: inherit;
-  height: var(--t-spacing-10);
+  gap: 2px;
+  height: var(--t-spacing-12);
   justify-content: center;
+  min-width: 0;
   padding: 0;
   transition: background-color duration(fast) ease;
-  width: var(--t-spacing-10);
 
   &[data-active] {
     background-color: var(--t-background-transparent-medium);
+    color: var(--t-font-color-primary);
   }
 
   @include hover-capable {
@@ -27,4 +30,29 @@
   }
 
   @include focus-ring;
+}
+
+.icon {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  // The primary item is the create button, drawn as a filled circle so it
+  // reads as the one action in a bar of destinations.
+  [data-variant='primary'] > & {
+    background-color: var(--t-font-color-primary);
+    border-radius: var(--t-border-radius-rounded);
+    height: var(--t-spacing-10);
+    width: var(--t-spacing-10);
+  }
+}
+
+.label {
+  font-size: var(--t-font-size-xxs);
+  font-weight: var(--t-font-weight-medium);
+  line-height: 1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

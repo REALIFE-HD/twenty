@@ -9,13 +9,14 @@
   corner-shape: round;
   display: flex;
   gap: var(--t-spacing-1);
-  justify-content: center;
+  justify-content: space-around;
+  max-width: 480px;
   padding: var(--t-spacing-1);
   transition:
     opacity duration(normal) ease,
     transform duration(normal) ease,
     visibility duration(normal);
-  width: max-content;
+  width: 100%;
 
   &[data-hidden] {
     opacity: 0;
@@ -27,4 +28,11 @@
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
+}
+
+.itemWrapper {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  min-width: 0;
 }

@@ -11,12 +11,11 @@ import { NavigationBar } from 'twenty-ui/components';
 import { isAiChatPath } from '~/utils/isAiChatPath';
 
 // The bar floats over the page, so the container has to let taps through to
-// whatever is scrolling underneath it. flex-start rather than left so the bar
-// follows the writing direction in RTL locales.
+// whatever is scrolling underneath it.
 const StyledFloatingContainer = styled.div`
   bottom: 0;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   left: 0;
   padding: ${MOBILE_NAVIGATION_BAR_PADDING};
   padding-bottom: calc(
