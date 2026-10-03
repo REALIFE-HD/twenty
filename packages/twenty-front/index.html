@@ -9,10 +9,39 @@
       href="/images/icons/android/android-launchericon-48-48.png"
       data-rh="true"
     />
-    <link rel="apple-touch-icon" href="/images/icons/ios/192.png" />
+    <link
+      rel="apple-touch-icon"
+      href="/images/icons/realife/apple-touch-icon-180.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="167x167"
+      href="/images/icons/realife/apple-touch-icon-167.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="/images/icons/realife/apple-touch-icon-152.png"
+    />
     <link rel="manifest" href="/manifest.json" />
 
-    <meta name="theme-color" content="#000000" />
+    <!-- Lets iOS open the home screen shortcut full screen, like an app -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Realife CRM" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <!-- Matches THEME_*.background.secondary so the status bar blends in -->
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: light)"
+      content="#fcfcfc"
+    />
+    <meta
+      name="theme-color"
+      media="(prefers-color-scheme: dark)"
+      content="#1b1b1b"
+    />
     <meta name="description" content="A modern open-source CRM" />
     <meta
       property="og:image"
