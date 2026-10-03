@@ -1,0 +1,10 @@
+# Copied to /opt/twenty/ on the server by deploy.sh, next to the official
+# docker-compose.yml, which docker compose merges automatically.
+services:
+  server:
+    # Rewritten by deploy.sh to the image it just built.
+    image: realife/twenty:REALIFE_IMAGE_TAG
+    volumes:
+      - ./realife:/realife:ro
+    # entrypoint.sh (migrations and so on) still runs first, then this.
+    command: ['sh', '-c', 'sh /realife/patch-index.sh; exec node dist/main']

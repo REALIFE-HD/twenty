@@ -1,3 +1,4 @@
+import { MobileHomeTasksSection } from '@/activities/tasks/components/MobileHomeTasksSection';
 import { MobileHomeAiChatSection } from '@/ai/components/MobileHomeAiChatSection';
 import { MainNavigationDrawerNavigationContent } from '@/navigation/components/MainNavigationDrawerNavigationContent';
 import { useDefaultHomePagePath } from '@/navigation/hooks/useDefaultHomePagePath';
@@ -46,6 +47,7 @@ export const MobileHomePage = () => {
 
       <NavigationDrawerScrollableContent>
         <StyledSections>
+          <MobileHomeTasksSection />
           <MainNavigationDrawerNavigationContent />
           {hasAiPermission && <MobileHomeAiChatSection />}
         </StyledSections>

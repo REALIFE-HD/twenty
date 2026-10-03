@@ -25530,3 +25530,18 @@ msgstr "拡大"
 #: src/modules/settings/data-model/graph-overview/components/SettingsDataModelOverview.tsx
 msgid "Zoom out"
 msgstr "縮小"
+
+#. js-lingui-id: 7YatJ4
+#: src/modules/activities/tasks/components/MobileHomeTasksSection.tsx
+msgid "Today's tasks"
+msgstr "今日のタスク"
+
+#. js-lingui-id: gukqfD
+#: src/modules/activities/tasks/components/MobileHomeTasksSection.tsx
+msgid "See all"
+msgstr "すべて表示"
+
+#. js-lingui-id: o8pCrZ
+#: src/modules/activities/tasks/components/MobileHomeTasksSection.tsx
+msgid "Nothing due today"
+msgstr "今日が期限のタスクはありません"
