@@ -17,9 +17,12 @@ import { useIsMobile } from 'twenty-ui/utilities';
 import { useAtomFamilySelectorValue } from '@/ui/utilities/state/jotai/hooks/useAtomFamilySelectorValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { styled } from '@linaria/react';
+import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { FieldMetadataType } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
+import { LightIconButton } from 'twenty-ui/components';
+import { IconChevronLeft } from 'twenty-ui/icon';
 import { Avatar } from 'twenty-ui/primitives/data-display';
 import { themeCssVariables } from 'twenty-ui/theme';
 import { getAbsoluteImageUrl } from '~/utils/image/getAbsoluteImageUrl';
@@ -85,6 +88,7 @@ export const ObjectRecordShowPageBreadcrumb = ({
 }) => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+  const { t } = useLingui();
   const isMobile = useIsMobile();
 
   const { loading } = useFindOneRecord({
@@ -152,17 +156,27 @@ export const ObjectRecordShowPageBreadcrumb = ({
   return (
     <StyledEditableTitleContainer data-testid="top-bar-title">
       {isMobile ? (
-        isDefined(recordIdentifier) && (
-          <StyledAvatarContainer>
-            <Avatar
-              src={getAbsoluteImageUrl(recordIdentifier.avatarUrl)}
-              name={recordIdentifier.name}
-              colorSeed={objectRecordId}
-              size="md"
-              shape={recordIdentifier.avatarShape ?? undefined}
-            />
-          </StyledAvatarContainer>
-        )
+        <>
+          {/* Mobile has no breadcrumb prefix to tap, so this is the way back */}
+          <LightIconButton
+            size="md"
+            aria-label={t`Back`}
+            onClick={() => navigateToIndexView()}
+          >
+            <IconChevronLeft />
+          </LightIconButton>
+          {isDefined(recordIdentifier) && (
+            <StyledAvatarContainer>
+              <Avatar
+                src={getAbsoluteImageUrl(recordIdentifier.avatarUrl)}
+                name={recordIdentifier.name}
+                colorSeed={objectRecordId}
+                size="md"
+                shape={recordIdentifier.avatarShape ?? undefined}
+              />
+            </StyledAvatarContainer>
+          )}
+        </>
       ) : (
         <StyledEditableTitlePrefix
           onClick={() => {

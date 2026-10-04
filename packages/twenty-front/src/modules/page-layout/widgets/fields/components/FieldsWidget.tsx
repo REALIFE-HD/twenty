@@ -6,6 +6,7 @@ import { FieldsWidgetCellEditModePortal } from '@/page-layout/widgets/fields/com
 import { FieldsWidgetCellHoveredPortal } from '@/page-layout/widgets/fields/components/FieldsWidgetCellHoveredPortal';
 import { FieldsWidgetFieldList } from '@/page-layout/widgets/fields/components/FieldsWidgetFieldList';
 import { FieldsWidgetGroupContainer } from '@/page-layout/widgets/fields/components/FieldsWidgetGroupContainer';
+import { MOBILE_COLLAPSED_FIELDS_GROUP_NAMES } from '@/page-layout/widgets/fields/constants/MobileCollapsedFieldsGroupNames';
 import { useFieldsWidgetGroupsForDisplay } from '@/page-layout/widgets/fields/hooks/useFieldsWidgetGroupsForDisplay';
 import { useFieldsWidgetHiddenFieldsForDisplay } from '@/page-layout/widgets/fields/hooks/useFieldsWidgetHiddenFieldsForDisplay';
 import { AnimatedPlaceholder } from '@/ui/feedback/empty-state/components/AnimatedPlaceholder/AnimatedPlaceholder';
@@ -18,6 +19,7 @@ import { styled } from '@linaria/react';
 import { t } from '@lingui/core/macro';
 
 import { themeCssVariables } from 'twenty-ui/theme';
+import { useIsMobile } from 'twenty-ui/utilities';
 import { type FieldsConfiguration } from '~/generated-metadata/graphql';
 
 const StyledPropertyBox = styled.div`
@@ -50,6 +52,7 @@ type FieldsWidgetProps = {
 export const FieldsWidget = ({ widget }: FieldsWidgetProps) => {
   const targetRecord = useTargetRecord();
   const isInSidePanel = useWorkspaceSurface().type === 'side-panel';
+  const isMobile = useIsMobile();
 
   const instanceId = `fields-${widget.id}-${targetRecord.id}${isInSidePanel ? '-side-panel' : ''}`;
 
@@ -124,7 +127,14 @@ export const FieldsWidget = ({ widget }: FieldsWidgetProps) => {
         >
           {shouldDisplayGroupHeaders ? (
             groups.map((group) => (
-              <FieldsWidgetGroupContainer key={group.id} title={group.name}>
+              <FieldsWidgetGroupContainer
+                key={group.id}
+                title={group.name}
+                defaultExpanded={
+                  !isMobile ||
+                  !MOBILE_COLLAPSED_FIELDS_GROUP_NAMES.includes(group.name)
+                }
+              >
                 <StyledPropertyBox>
                   <FieldsWidgetFieldList
                     fields={group.fields}

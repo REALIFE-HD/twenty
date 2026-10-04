@@ -80,6 +80,12 @@ const StyledRight = styled.div<{ centerTitle?: boolean }>`
   justify-content: flex-end;
   justify-self: end;
   width: 100%;
+
+  /* Fingers need more than the desktop button size to hit reliably. */
+  &[data-mobile] button {
+    min-height: ${themeCssVariables.spacing[9]};
+    min-width: ${themeCssVariables.spacing[9]};
+  }
 `;
 
 const StyledSurfaceTitle = styled(StyledTitle)`
@@ -174,6 +180,7 @@ export const PageCardHeader = ({
       <StyledRight
         centerTitle={shouldCenterTitle}
         data-click-outside-id={PAGE_ACTION_CONTAINER_CLICK_OUTSIDE_ID}
+        data-mobile={isMobile ? '' : undefined}
       >
         {actionButton}
       </StyledRight>

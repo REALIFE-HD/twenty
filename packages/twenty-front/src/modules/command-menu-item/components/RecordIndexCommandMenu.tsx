@@ -8,9 +8,11 @@ import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/st
 import { useWorkspaceSurface } from '@/ui/layout/hooks/useWorkspaceSurface';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { useIsMobile } from 'twenty-ui/utilities';
 
 export const RecordIndexCommandMenu = () => {
   const isInSidePanel = useWorkspaceSurface().type === 'side-panel';
+  const isMobile = useIsMobile();
 
   const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
     contextStoreCurrentObjectMetadataItemIdComponentState,
@@ -24,13 +26,19 @@ export const RecordIndexCommandMenu = () => {
     <>
       {contextStoreCurrentObjectMetadataItemId && (
         <>
-          <CommandMenuContextProvider
-            displayType="button"
-            containerType={CommandMenuItemContainerType.IndexPageHeader}
-            isInPreviewMode={isLayoutCustomizationModeEnabled && !isInSidePanel}
-          >
-            <PinnedCommandMenuItemButtons />
-          </CommandMenuContextProvider>
+          {/* On mobile the tab bar's create menu covers the pinned actions, and
+              the header has no room for them; they stay in the dropdown. */}
+          {!isMobile && (
+            <CommandMenuContextProvider
+              displayType="button"
+              containerType={CommandMenuItemContainerType.IndexPageHeader}
+              isInPreviewMode={
+                isLayoutCustomizationModeEnabled && !isInSidePanel
+              }
+            >
+              <PinnedCommandMenuItemButtons />
+            </CommandMenuContextProvider>
+          )}
           <CommandMenuContextProvider
             displayType="dropdownItem"
             containerType={CommandMenuItemContainerType.IndexPageDropdown}

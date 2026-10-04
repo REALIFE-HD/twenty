@@ -71,7 +71,7 @@ export const MobileHomeTasksSection = () => {
     <StyledSection>
       <StyledHeader>
         <StyledTitle>
-          {t`Today's tasks`}
+          {t`Open tasks`}
           {!loading && tasks.length > 0 && (
             <StyledCount>{tasks.length}</StyledCount>
           )}
@@ -91,7 +91,7 @@ export const MobileHomeTasksSection = () => {
       </StyledHeader>
       <StyledCard>
         {!loading && tasks.length === 0 && (
-          <StyledEmptyState>{t`Nothing due today`}</StyledEmptyState>
+          <StyledEmptyState>{t`No open tasks`}</StyledEmptyState>
         )}
         {tasks.map((task) => (
           <MobileHomeTaskRow key={task.id} task={task} />
