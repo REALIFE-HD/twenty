@@ -8,6 +8,7 @@ import { contextStoreTargetedRecordsRuleComponentState } from '@/context-store/s
 import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/states/isLayoutCustomizationModeEnabledState';
 import { useAtomComponentStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomComponentStateValue';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { useIsMobile } from 'twenty-ui/utilities';
 
 export const RecordShowCommandMenu = () => {
   const contextStoreCurrentObjectMetadataItemId = useAtomComponentStateValue(
@@ -27,18 +28,23 @@ export const RecordShowCommandMenu = () => {
   const isLayoutCustomizationModeEnabled = useAtomStateValue(
     isLayoutCustomizationModeEnabledState,
   );
+  const isMobile = useIsMobile();
 
   return (
     <>
       {hasSelectedRecord && contextStoreCurrentObjectMetadataItemId && (
         <>
-          <CommandMenuContextProvider
-            displayType="button"
-            containerType={CommandMenuItemContainerType.ShowPageHeader}
-            isInPreviewMode={isLayoutCustomizationModeEnabled}
-          >
-            <PinnedCommandMenuItemButtons />
-          </CommandMenuContextProvider>
+          {/* The pinned buttons push the record name out of a phone-width
+              header; they stay reachable from the command menu. */}
+          {!isMobile && (
+            <CommandMenuContextProvider
+              displayType="button"
+              containerType={CommandMenuItemContainerType.ShowPageHeader}
+              isInPreviewMode={isLayoutCustomizationModeEnabled}
+            >
+              <PinnedCommandMenuItemButtons />
+            </CommandMenuContextProvider>
+          )}
           <CommandMenuItemEditButton />
         </>
       )}

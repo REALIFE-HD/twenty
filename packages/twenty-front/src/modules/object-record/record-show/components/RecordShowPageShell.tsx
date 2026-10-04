@@ -10,6 +10,7 @@ import { isLayoutCustomizationModeEnabledState } from '@/layout-customization/st
 import { RecordComponentInstanceContextsWrapper } from '@/object-record/components/RecordComponentInstanceContextsWrapper';
 import { PageLayoutRecordPageRenderer } from '@/object-record/record-show/components/PageLayoutRecordPageRenderer';
 import { RecordShowPageResourceEffect } from '@/object-record/record-show/components/RecordShowPageResourceEffect';
+import { RecordShowMobileActionBar } from '@/object-record/record-show/components/RecordShowMobileActionBar';
 import { RecordShowPageSSESubscribeEffect } from '@/object-record/record-show/components/RecordShowPageSSESubscribeEffect';
 import { computeRecordShowComponentInstanceId } from '@/object-record/record-show/utils/computeRecordShowComponentInstanceId';
 import { type RecordShowPageHeaderTitleMode } from '@/object-record/record-show/types/RecordShowPageHeaderTitleMode';
@@ -21,6 +22,7 @@ import { PageCardLayout } from '@/ui/layout/page/components/PageCardLayout';
 import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
 import { RecordShowPageHeader } from '~/pages/object-record/RecordShowPageHeader';
 import { RecordShowPageTitle } from '~/pages/object-record/RecordShowPageTitle';
+import { useIsMobile } from 'twenty-ui/utilities';
 
 type RecordShowPageShellProps = {
   objectNameSingular: string;
@@ -44,6 +46,7 @@ export const RecordShowPageShell = ({
   isRecordIdentifierBarHidden = false,
 }: RecordShowPageShellProps) => {
   const isInSidePanel = useWorkspaceSurface().type === 'side-panel';
+  const isMobile = useIsMobile();
   const isLayoutCustomizationModeEnabled = useAtomStateValue(
     isLayoutCustomizationModeEnabledState,
   );
@@ -106,6 +109,12 @@ export const RecordShowPageShell = ({
               recordId: objectRecordId,
             }}
           >
+            {isMobile && !isInSidePanel && (
+              <RecordShowMobileActionBar
+                objectNameSingular={objectNameSingular}
+                objectRecordId={objectRecordId}
+              />
+            )}
             <PageLayoutRecordPageRenderer
               targetRecordIdentifier={{
                 id: objectRecordId,

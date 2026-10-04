@@ -7,7 +7,12 @@ import { CoreObjectNameSingular } from 'twenty-shared/types';
 import { isDefined } from 'twenty-shared/utils';
 import { Checkbox } from 'twenty-ui/primitives/input';
 import { themeCssVariables } from 'twenty-ui/theme';
-import { beautifyExactDate } from '~/utils/date-utils';
+import { useAtomStateValue } from '@/ui/utilities/state/jotai/hooks/useAtomStateValue';
+import { dateLocaleState } from '~/localization/states/dateLocaleState';
+import {
+  beautifyExactDate,
+  beautifyPastDateRelativeToNow,
+} from '~/utils/date-utils';
 
 const StyledRow = styled.div`
   align-items: center;
@@ -28,12 +33,25 @@ const StyledCheckboxContainer = styled.div`
   display: flex;
 `;
 
+const StyledText = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: ${themeCssVariables.spacing[2]} 0;
+`;
+
+const StyledCreatedAt = styled.span`
+  color: ${themeCssVariables.font.color.tertiary};
+  font-size: ${themeCssVariables.font.size.xs};
+`;
+
 const StyledTitle = styled.span<{ isCompleted: boolean }>`
   color: ${({ isCompleted }) =>
     isCompleted
       ? themeCssVariables.font.color.tertiary
       : themeCssVariables.font.color.primary};
-  flex: 1;
   font-size: ${themeCssVariables.font.size.md};
   overflow: hidden;
   text-decoration: ${({ isCompleted }) =>
@@ -65,6 +83,7 @@ export const MobileHomeTaskRow = ({ task }: MobileHomeTaskRowProps) => {
   const { t } = useLingui();
   const { openRecordInSidePanel } = useOpenRecordInSidePanel();
   const { completeTask } = useCompleteTask(task);
+  const { localeCatalog } = useAtomStateValue(dateLocaleState);
 
   const isCompleted = task.status === 'DONE';
   const dueDate = isDefined(task.dueAt) ? new Date(task.dueAt) : null;
@@ -86,9 +105,16 @@ export const MobileHomeTaskRow = ({ task }: MobileHomeTaskRowProps) => {
           onCheckedChange={completeTask}
         />
       </StyledCheckboxContainer>
-      <StyledTitle isCompleted={isCompleted}>
-        {task.title || t`Untitled`}
-      </StyledTitle>
+      <StyledText>
+        <StyledTitle isCompleted={isCompleted}>
+          {task.title || t`Untitled`}
+        </StyledTitle>
+        {isDefined(task.createdAt) && (
+          <StyledCreatedAt>
+            {beautifyPastDateRelativeToNow(task.createdAt, localeCatalog)}
+          </StyledCreatedAt>
+        )}
+      </StyledText>
       {isDefined(dueDate) && (
         <StyledDueDate isOverdue={isOverdue && !isCompleted}>
           {isOverdue ? beautifyExactDate(dueDate) : t`Today`}

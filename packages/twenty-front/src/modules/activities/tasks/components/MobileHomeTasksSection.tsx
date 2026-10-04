@@ -8,11 +8,12 @@ import { AppPath, CoreObjectNameSingular } from 'twenty-shared/types';
 import { getAppPath } from 'twenty-shared/utils';
 import { themeCssVariables } from 'twenty-ui/theme';
 
+// No horizontal padding of its own so that the card lines up with the menu
+// card below, which the drawer content already insets.
 const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
   gap: ${themeCssVariables.spacing[2]};
-  padding: 0 ${themeCssVariables.spacing[3]};
 `;
 
 const StyledHeader = styled.div`
@@ -22,9 +23,10 @@ const StyledHeader = styled.div`
   padding: 0 ${themeCssVariables.spacing[1]};
 `;
 
+// Same weight as the drawer's section titles ("Workspace") just below.
 const StyledTitle = styled.h2`
-  color: ${themeCssVariables.font.color.primary};
-  font-size: ${themeCssVariables.font.size.lg};
+  color: ${themeCssVariables.font.color.light};
+  font-size: ${themeCssVariables.font.size.xs};
   font-weight: ${themeCssVariables.font.weight.semiBold};
   margin: 0;
 `;
@@ -62,7 +64,7 @@ const StyledEmptyState = styled.div`
 export const MobileHomeTasksSection = () => {
   const { t } = useLingui();
   const navigate = useNavigate();
-  const { tasks, loading } = useMobileHomeTasks();
+  const { tasks, totalCount, loading } = useMobileHomeTasks();
   const { objectMetadataItem: taskObjectMetadataItem } = useObjectMetadataItem({
     objectNameSingular: CoreObjectNameSingular.Task,
   });
@@ -72,8 +74,8 @@ export const MobileHomeTasksSection = () => {
       <StyledHeader>
         <StyledTitle>
           {t`Open tasks`}
-          {!loading && tasks.length > 0 && (
-            <StyledCount>{tasks.length}</StyledCount>
+          {!loading && totalCount > 0 && (
+            <StyledCount>{totalCount}</StyledCount>
           )}
         </StyledTitle>
         <StyledSeeAllButton
