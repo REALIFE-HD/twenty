@@ -13,8 +13,9 @@ const getEndOfToday = () => {
   return endOfToday;
 };
 
-// Open tasks assigned to the current member that are due today or already
-// late, so the home page answers "what do I have to do now".
+// Open tasks that are due by today or have no due date, either assigned to the
+// current member or to nobody. Tasks created by workflows usually carry no
+// assignee nor due date, and leaving them out would empty the home page.
 export const useMobileHomeTasks = () => {
   const currentWorkspaceMember = useAtomStateValue(currentWorkspaceMemberState);
   const endOfTodayIsoString = useMemo(() => getEndOfToday().toISOString(), []);
@@ -24,14 +25,24 @@ export const useMobileHomeTasks = () => {
     skip: !isDefined(currentWorkspaceMember),
     filter: {
       and: [
-        { assigneeId: { eq: currentWorkspaceMember?.id } },
-        { dueAt: { lte: endOfTodayIsoString } },
+        {
+          or: [
+            { assigneeId: { eq: currentWorkspaceMember?.id } },
+            { assigneeId: { is: 'NULL' } },
+          ],
+        },
+        {
+          or: [
+            { dueAt: { lte: endOfTodayIsoString } },
+            { dueAt: { is: 'NULL' } },
+          ],
+        },
         {
           or: [{ status: { neq: 'DONE' } }, { status: { is: 'NULL' } }],
         },
       ],
     },
-    orderBy: [{ dueAt: 'AscNullsLast' }],
+    orderBy: [{ dueAt: 'AscNullsLast' }, { createdAt: 'DescNullsLast' }],
     limit: MOBILE_HOME_TASKS_LIMIT,
     recordGqlFields: {
       id: true,
