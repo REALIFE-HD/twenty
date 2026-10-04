@@ -1,7 +1,7 @@
 # Realife build: the official image with only the frontend replaced.
 # The server is left exactly as released so that upgrades stay a matter of
 # bumping BASE_IMAGE and rebasing the frontend changes.
-ARG BASE_IMAGE=twentycrm/twenty:v2.43.0
+ARG BASE_IMAGE=twentycrm/twenty:v2.44.0
 FROM ${BASE_IMAGE}
 
 USER root

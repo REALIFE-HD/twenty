@@ -9,7 +9,7 @@
 set -euo pipefail
 
 SERVER=${REALIFE_SERVER:-root@187.127.214.178}
-TAG=${1:?usage: deploy.sh <tag, e.g. v2.43.0-realife.1>}
+TAG=${1:?usage: deploy.sh <tag, e.g. v2.44.0-realife.1>}
 HERE=packages/twenty-docker/realife
 BUILD_DIR=/opt/twenty/realife-build
 

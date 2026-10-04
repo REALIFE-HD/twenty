@@ -1,7 +1,7 @@
 # Realife build of Twenty
 
-Twenty `v2.43.0` with Realife's mobile UI changes. Only the frontend differs
-from the official release: the image is `twentycrm/twenty:v2.43.0` with
+Twenty `v2.44.0` with Realife's mobile UI changes. Only the frontend differs
+from the official release: the image is `twentycrm/twenty:v2.44.0` with
 `dist/front` replaced, so the server, migrations and worker stay exactly as
 released.
 
@@ -38,7 +38,7 @@ NODE_OPTIONS=--max-old-space-size=8192 corepack yarn nx run twenty-front:build -
 Then, from the repository root:
 
 ```bash
-bash packages/twenty-docker/realife/deploy.sh v2.43.0-realife.<n>
+bash packages/twenty-docker/realife/deploy.sh v2.44.0-realife.<n>
 ```
 
 The CRM restarts and is unavailable for about two minutes. The script prints

@@ -12,7 +12,7 @@ concurrency:
 
 env:
   # Keep in step with the Twenty version the frontend changes are based on.
-  BASE_IMAGE: twentycrm/twenty:v2.43.0
+  BASE_IMAGE: twentycrm/twenty:v2.44.0
   IMAGE: ghcr.io/realife-hd/twenty
 
 jobs:
