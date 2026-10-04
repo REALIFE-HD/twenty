@@ -25023,3 +25023,18 @@ msgstr "すべて表示"
 #: src/modules/activities/tasks/components/MobileHomeTasksSection.tsx
 msgid "No open tasks"
 msgstr "未完了のタスクはありません"
+
+#. js-lingui-id: 8hvxGX
+#: src/modules/object-record/record-show/components/RecordShowMobileActionBar.tsx
+msgid "Call"
+msgstr "電話"
+
+#. js-lingui-id: NeOuRn
+#: src/modules/object-record/record-show/components/RecordShowMobileActionBar.tsx
+msgid "Add note"
+msgstr "メモを追加"
+
+#. js-lingui-id: hWkQMS
+#: src/modules/object-record/record-show/components/RecordShowMobileActionBar.tsx
+msgid "Add task"
+msgstr "タスクを追加"

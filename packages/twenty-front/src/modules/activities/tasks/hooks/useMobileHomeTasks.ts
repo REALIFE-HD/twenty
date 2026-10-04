@@ -20,7 +20,7 @@ export const useMobileHomeTasks = () => {
   const currentWorkspaceMember = useAtomStateValue(currentWorkspaceMemberState);
   const endOfTodayIsoString = useMemo(() => getEndOfToday().toISOString(), []);
 
-  const { records, loading } = useFindManyRecords<Task>({
+  const { records, totalCount, loading } = useFindManyRecords<Task>({
     objectNameSingular: CoreObjectNameSingular.Task,
     skip: !isDefined(currentWorkspaceMember),
     filter: {
@@ -49,8 +49,9 @@ export const useMobileHomeTasks = () => {
       title: true,
       status: true,
       dueAt: true,
+      createdAt: true,
     },
   });
 
-  return { tasks: records, loading };
+  return { tasks: records, totalCount: totalCount ?? records.length, loading };
 };

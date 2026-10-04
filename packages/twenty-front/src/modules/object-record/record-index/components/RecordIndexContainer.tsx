@@ -14,6 +14,7 @@ import { useHasCurrentViewNonReadableFields } from '@/object-record/record-index
 import { RecordListContainer } from '@/object-record/record-list/components/RecordListContainer';
 import { ViewType } from '@/views/types/ViewType';
 import { themeCssVariables } from 'twenty-ui/theme';
+import { useIsMobile } from 'twenty-ui/utilities';
 
 const StyledContainer = styled.div`
   display: flex;
@@ -34,6 +35,12 @@ export const RecordIndexContainer = () => {
   const recordIndexViewType = useAtomComponentStateValue(
     recordIndexViewTypeState,
   );
+  const isMobile = useIsMobile();
+
+  // A phone shows one or two table columns at best, so table views render as
+  // cards there. Both read the same view query, filters and sorts.
+  const shouldRenderTableAsList =
+    isMobile && recordIndexViewType === ViewType.TABLE;
 
   const { recordIndexId, objectMetadataItem, objectNameSingular } =
     useRecordIndexContextOrThrow();
@@ -50,9 +57,10 @@ export const RecordIndexContainer = () => {
       ) : (
         <>
           <RecordIndexFiltersToContextStoreEffect />
-          {recordIndexViewType === ViewType.TABLE && (
-            <RecordIndexTableContainer recordTableId={recordIndexId} />
-          )}
+          {recordIndexViewType === ViewType.TABLE &&
+            !shouldRenderTableAsList && (
+              <RecordIndexTableContainer recordTableId={recordIndexId} />
+            )}
           {recordIndexViewType === ViewType.KANBAN && (
             <StyledContainerWithPadding>
               <RecordBoardContainer
@@ -67,7 +75,8 @@ export const RecordIndexContainer = () => {
               <RecordIndexCalendarContainer />
             </StyledContainerWithPadding>
           )}
-          {recordIndexViewType === ViewType.LIST && (
+          {(recordIndexViewType === ViewType.LIST ||
+            shouldRenderTableAsList) && (
             <StyledContainerWithPadding>
               <RecordListContainer
                 objectNameSingular={objectNameSingular}

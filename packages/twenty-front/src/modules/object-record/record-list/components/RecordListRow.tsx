@@ -6,6 +6,12 @@ import { isFieldValueEmpty } from '@/object-record/record-field/ui/utils/isField
 import { useRecordIndexContextOrThrow } from '@/object-record/record-index/contexts/RecordIndexContext';
 import { useOpenRecordFromIndexView } from '@/object-record/record-index/hooks/useOpenRecordFromIndexView';
 import { RecordListRowField } from '@/object-record/record-list/components/RecordListRowField';
+import { RECORD_LIST_MOBILE_CARD_FIELD_COUNT } from '@/object-record/record-list/constants/RecordListMobileCardFieldCount';
+import { RECORD_LIST_MOBILE_CARD_FIELD_MAX_WIDTH } from '@/object-record/record-list/constants/RecordListMobileCardFieldMaxWidth';
+import {
+  RECORD_LIST_MOBILE_CARD_HIDDEN_FIELD_NAMES,
+  RECORD_LIST_MOBILE_CARD_HIDDEN_FIELD_TYPES,
+} from '@/object-record/record-list/constants/RecordListMobileCardHiddenFieldTypes';
 import { RECORD_LIST_ROW_LABEL_IDENTIFIER_WIDTH } from '@/object-record/record-list/constants/RecordListRowLabelIdentifierWidth';
 import { RECORD_LIST_ROW_OVERFLOW_CHIP_SLOT_WIDTH } from '@/object-record/record-list/constants/RecordListRowOverflowChipSlotWidth';
 import { useRecordListContextOrThrow } from '@/object-record/record-list/contexts/RecordListContext';
@@ -22,6 +28,7 @@ import { isNonEmptyString } from '@sniptt/guards';
 import { isDefined } from 'twenty-shared/utils';
 import { Chip } from 'twenty-ui/primitives/data-display';
 import { themeCssVariables } from 'twenty-ui/theme';
+import { useIsMobile } from 'twenty-ui/utilities';
 
 const StyledRowContainer = styled.div`
   cursor: pointer;
@@ -34,6 +41,11 @@ const StyledRowContainer = styled.div`
   &:active > div {
     background: ${themeCssVariables.accent.quaternary};
   }
+
+  &[data-mobile] {
+    border-bottom: 1px solid ${themeCssVariables.border.color.light};
+    padding-bottom: 0;
+  }
 `;
 
 const StyledRow = styled.div`
@@ -44,6 +56,15 @@ const StyledRow = styled.div`
   height: 32px;
   justify-content: space-between;
   padding: 0 6px;
+
+  /* On a phone the row becomes a card: the name on top, fields below. */
+  [data-mobile] > & {
+    align-items: stretch;
+    flex-direction: column;
+    gap: ${themeCssVariables.spacing[1]};
+    height: auto;
+    padding: ${themeCssVariables.spacing[2]} 6px;
+  }
 `;
 
 const StyledRecordChipContainer = styled.div`
@@ -51,6 +72,10 @@ const StyledRecordChipContainer = styled.div`
   flex: 1 1 ${RECORD_LIST_ROW_LABEL_IDENTIFIER_WIDTH}px;
   min-width: 0;
   overflow: hidden;
+
+  [data-mobile] & {
+    flex-basis: auto;
+  }
 `;
 
 const StyledFieldsContainer = styled.div`
@@ -60,6 +85,12 @@ const StyledFieldsContainer = styled.div`
   gap: ${themeCssVariables.spacing[3]};
   justify-content: flex-end;
   overflow: hidden;
+
+  [data-mobile] & {
+    flex-wrap: wrap;
+    gap: ${themeCssVariables.spacing[1]} ${themeCssVariables.spacing[3]};
+    justify-content: flex-start;
+  }
 `;
 
 const StyledOverflowChipContainer = styled.div`
@@ -91,6 +122,7 @@ export const RecordListRow = ({ recordId }: RecordListRowProps) => {
   );
 
   const { openRecordFromIndexView } = useOpenRecordFromIndexView();
+  const isMobile = useIsMobile();
 
   if (!isDefined(recordStore)) {
     return null;
@@ -120,18 +152,37 @@ export const RecordListRow = ({ recordId }: RecordListRowProps) => {
     },
   );
 
-  const displayedFieldsLayout = computeRecordListDisplayedFields({
-    rowWidth: recordListRowWidth,
-    populatedFieldCount: nonEmptyRecordFields.length,
-  });
+  const displayedFieldsLayout = isMobile
+    ? {
+        displayedFieldCount: RECORD_LIST_MOBILE_CARD_FIELD_COUNT,
+        displayedFieldMaxWidth: RECORD_LIST_MOBILE_CARD_FIELD_MAX_WIDTH,
+      }
+    : computeRecordListDisplayedFields({
+        rowWidth: recordListRowWidth,
+        populatedFieldCount: nonEmptyRecordFields.length,
+      });
 
-  const displayedRecordFields = nonEmptyRecordFields.slice(
+  const cardRecordFields = isMobile
+    ? nonEmptyRecordFields.filter(
+        ({ fieldDefinition }) =>
+          !RECORD_LIST_MOBILE_CARD_HIDDEN_FIELD_TYPES.includes(
+            fieldDefinition.type,
+          ) &&
+          !RECORD_LIST_MOBILE_CARD_HIDDEN_FIELD_NAMES.includes(
+            fieldDefinition.metadata.fieldName,
+          ),
+      )
+    : nonEmptyRecordFields;
+
+  const displayedRecordFields = cardRecordFields.slice(
     0,
     displayedFieldsLayout.displayedFieldCount,
   );
 
-  const hiddenFieldCount =
-    nonEmptyRecordFields.length - displayedRecordFields.length;
+  // A card has no spare line for the overflow chip; the record page shows all.
+  const hiddenFieldCount = isMobile
+    ? 0
+    : nonEmptyRecordFields.length - displayedRecordFields.length;
 
   const openRecord = () => openRecordFromIndexView({ recordId });
 
@@ -145,6 +196,7 @@ export const RecordListRow = ({ recordId }: RecordListRowProps) => {
 
   return (
     <StyledRowContainer
+      data-mobile={isMobile ? '' : undefined}
       role="button"
       tabIndex={0}
       aria-label={t`Open record`}

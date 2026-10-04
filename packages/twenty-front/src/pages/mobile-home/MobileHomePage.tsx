@@ -1,6 +1,7 @@
 import { MobileHomeTasksSection } from '@/activities/tasks/components/MobileHomeTasksSection';
 import { MobileHomeAiChatSection } from '@/ai/components/MobileHomeAiChatSection';
 import { MainNavigationDrawerNavigationContent } from '@/navigation/components/MainNavigationDrawerNavigationContent';
+import { MOBILE_NAVIGATION_BAR_CLEARANCE } from '@/navigation/constants/MobileNavigationBarClearance';
 import { useDefaultHomePagePath } from '@/navigation/hooks/useDefaultHomePagePath';
 import { useHasPermissionFlag } from '@/settings/roles/hooks/useHasPermissionFlag';
 import { MultiWorkspaceDropdownButton } from '@/ui/navigation/navigation-drawer/components/MultiWorkspaceDropdown/MultiWorkspaceDropdownButton';
@@ -21,6 +22,13 @@ const StyledContainer = styled.div`
   min-height: 0;
   padding: ${themeCssVariables.spacing[2]} 0 ${themeCssVariables.spacing[4]};
   width: 100%;
+`;
+
+// The tab bar floats over the page, so the scroll has to end above it or the
+// last section stays hidden behind it.
+const StyledTabBarClearance = styled.div`
+  flex-shrink: 0;
+  height: ${MOBILE_NAVIGATION_BAR_CLEARANCE};
 `;
 
 const StyledSections = styled.div`
@@ -50,6 +58,7 @@ export const MobileHomePage = () => {
           <MobileHomeTasksSection />
           <MainNavigationDrawerNavigationContent />
           {hasAiPermission && <MobileHomeAiChatSection />}
+          <StyledTabBarClearance />
         </StyledSections>
       </NavigationDrawerScrollableContent>
     </StyledContainer>
